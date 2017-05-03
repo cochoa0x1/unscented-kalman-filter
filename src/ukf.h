@@ -29,6 +29,9 @@ public:
   ///* state covariance matrix
   MatrixXd P_;
 
+  ///* augmented sigma points matrix
+  MatrixXd Xsig_aug_;
+
   ///* predicted sigma points matrix
   MatrixXd Xsig_pred_;
 
@@ -61,6 +64,9 @@ public:
 
   ///* State dimension
   int n_x_;
+
+  ///* Radar state dimension
+  int n_z_;
 
   ///* Augmented state dimension
   int n_aug_;
@@ -108,6 +114,20 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+private:
+
+  //void RectToPolar(VectorXd* rect, VectorXd* polar);
+
+  /**
+   * Generate sigma points, store them in matrix Xsig_out
+   */ 
+
+  void AugmentedSigmaPoints(MatrixXd* Xsig_out);
+  void SigmaPointPrediction(MatrixXd* Xsig_out, double delta_t);
+  void PredictMeanAndCovariance(VectorXd* x_pred, MatrixXd* P_pred);
+  void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out);
+  //void UpdateState(VectorXd* x_out, MatrixXd* P_out);
 };
 
 #endif /* UKF_H */
