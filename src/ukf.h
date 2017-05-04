@@ -117,17 +117,26 @@ public:
 
 private:
 
-  //void RectToPolar(VectorXd* rect, VectorXd* polar);
-
   /**
    * Generate sigma points, store them in matrix Xsig_out
+   * @param Xsig_out the sigma point matrix to store the resuls in
    */ 
-
   void AugmentedSigmaPoints(MatrixXd* Xsig_out);
+
+  /**
+   * Transform sigma points via process model
+   * @param Xsig_out the sigma point matrix to store the resuls in
+   * @param delta_t time in seconds since last observation
+   */ 
   void SigmaPointPrediction(MatrixXd* Xsig_out, double delta_t);
+
+  /**
+   * Estimate new state from sigma points
+   * @param x_pred the output state mean
+   * @param P_pred output state covariance matrix
+   */ 
   void PredictMeanAndCovariance(VectorXd* x_pred, MatrixXd* P_pred);
-  void PredictRadarMeasurement(VectorXd* z_out, MatrixXd* S_out);
-  //void UpdateState(VectorXd* x_out, MatrixXd* P_out);
+  
 };
 
 #endif /* UKF_H */
