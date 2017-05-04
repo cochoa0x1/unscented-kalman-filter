@@ -85,51 +85,51 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
    //set the initial position to whatever the current measurement is
    if(meas_package.sensor_type_ == MeasurementPackage::LASER){
 
-      double _x = meas_package.raw_measurements_[0];
-      double _y = meas_package.raw_measurements_[1];
-      double _yaw_angle = atan2(_y,_x);
-      x_ << _x,_y,0,_yaw_angle, 0.0;
+    double _x = meas_package.raw_measurements_[0];
+    double _y = meas_package.raw_measurements_[1];
+    double _yaw_angle = atan2(_y,_x);
+    x_ << _x,_y,0,_yaw_angle, 0.0;
 
       //fill state cov matrix
-      P_(0,0) = std_laspx_*std_laspx_;
-      P_(1,1) = std_laspy_*std_laspy_;
-      P_(2,2) = 5;
-      P_(3,3) = 5;
-      P_(4,4) = 5;
+    P_(0,0) = std_laspx_*std_laspx_;
+    P_(1,1) = std_laspy_*std_laspy_;
+    P_(2,2) = 5;
+    P_(3,3) = 5;
+    P_(4,4) = 5;
 
 
 
-   }else if(meas_package.sensor_type_ == MeasurementPackage::RADAR){
+  }else if(meas_package.sensor_type_ == MeasurementPackage::RADAR){
 
-      double _p = meas_package.raw_measurements_[0];
-      double _yaw_angle = meas_package.raw_measurements_[1];
-      double _v = meas_package.raw_measurements_[2];
+    double _p = meas_package.raw_measurements_[0];
+    double _yaw_angle = meas_package.raw_measurements_[1];
+    double _v = meas_package.raw_measurements_[2];
 
-      double _x = _p*cos(_yaw_angle);
-      double _y = _p*sin(_yaw_angle);
+    double _x = _p*cos(_yaw_angle);
+    double _y = _p*sin(_yaw_angle);
 
-      x_ << _x, _y, _v, _yaw_angle, 0.0; 
+    x_ << _x, _y, _v, _yaw_angle, 0.0; 
 
       //quick estimate of position uncertainty based on radius and angle uncertainty
-      double dx = cos(_yaw_angle)*std_radr_ - _p*sin(_yaw_angle)*std_radphi_;
-      double dy = sin(_yaw_angle)*std_radr_ + _p*cos(_yaw_angle)*std_radphi_;
-      
-      //fill state cov matrix
-      P_(0,0) = dx*dx;
-      P_(1,1) = dy*dy;
-      P_(2,2) = std_radrd_;
-      P_(3,3) = std_radphi_*std_radphi_;
-      P_(4,4) = 5;
+    double dx = cos(_yaw_angle)*std_radr_ - _p*sin(_yaw_angle)*std_radphi_;
+    double dy = sin(_yaw_angle)*std_radr_ + _p*cos(_yaw_angle)*std_radphi_;
     
-   }
-
-   time_us_ = meas_package.timestamp_;
-   is_initialized_ = true;
-   cout << "--------Initialized---------" << endl;
-   cout << x_ << endl;
-   return;
-   
+      //fill state cov matrix
+    P_(0,0) = dx*dx;
+    P_(1,1) = dy*dy;
+    P_(2,2) = std_radrd_;
+    P_(3,3) = std_radphi_*std_radphi_;
+    P_(4,4) = 5;
+    
   }
+
+  time_us_ = meas_package.timestamp_;
+  is_initialized_ = true;
+  cout << "--------Initialized---------" << endl;
+  cout << x_ << endl;
+  return;
+  
+}
 
   double dt = (meas_package.timestamp_ - time_us_) / 1000000.0; //dt - expressed in seconds
   time_us_  = meas_package.timestamp_;
@@ -192,7 +192,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   VectorXd z_pred = VectorXd(2);
   z_pred.fill(0.0);
   for (int i=0; i < 2*n_aug_+1; i++) {
-      z_pred = z_pred + weights_(i) * Zsig.col(i);
+    z_pred = z_pred + weights_(i) * Zsig.col(i);
   }
 
   //measurement covariance matrix S
@@ -209,7 +209,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   //add measurement noise covariance matrix
   MatrixXd R = MatrixXd(2,2);
   R <<    std_laspx_*std_laspx_,0,
-          0, std_laspy_*std_laspy_;
+  0, std_laspy_*std_laspy_;
 
   S = S + R;
 
@@ -281,7 +281,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   VectorXd z_pred = VectorXd(n_z_);
   z_pred.fill(0.0);
   for (int i=0; i < 2*n_aug_+1; i++) {
-      z_pred = z_pred + weights_(i) * Zsig.col(i);
+    z_pred = z_pred + weights_(i) * Zsig.col(i);
   }
 
   //measurement covariance matrix S
@@ -301,8 +301,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   //add measurement noise covariance matrix
   MatrixXd R = MatrixXd(n_z_,n_z_);
   R <<    std_radr_*std_radr_, 0, 0,
-          0, std_radphi_*std_radphi_, 0,
-          0, 0,std_radrd_*std_radrd_;
+  0, std_radphi_*std_radphi_, 0,
+  0, 0,std_radrd_*std_radrd_;
   S = S + R;
 
   //measurement vector
@@ -359,38 +359,38 @@ void UKF::AugmentedSigmaPoints(MatrixXd* Xsig_out) {
 
  cout << "1. calculate sigma points..." << endl;
   //create augmented mean vector
-  VectorXd x_aug = VectorXd(7);
+ VectorXd x_aug = VectorXd(7);
 
   //create augmented state covariance
-  MatrixXd P_aug = MatrixXd(7, 7);
+ MatrixXd P_aug = MatrixXd(7, 7);
 
   //create sigma point matrix
-  MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
+ MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
 
   //create augmented mean state
-  x_aug.head(5) = x_;
-  x_aug(5) = 0;
-  x_aug(6) = 0;
+ x_aug.head(5) = x_;
+ x_aug(5) = 0;
+ x_aug(6) = 0;
 
   //create augmented covariance matrix
-  P_aug.fill(0.0);
-  P_aug.topLeftCorner(5,5) = P_;
-  P_aug(5,5) = std_a_*std_a_;
-  P_aug(6,6) = std_yawdd_*std_yawdd_;
+ P_aug.fill(0.0);
+ P_aug.topLeftCorner(5,5) = P_;
+ P_aug(5,5) = std_a_*std_a_;
+ P_aug(6,6) = std_yawdd_*std_yawdd_;
 
   //create square root matrix
-  MatrixXd L = P_aug.llt().matrixL();
+ MatrixXd L = P_aug.llt().matrixL();
 
   //create augmented sigma points
-  Xsig_aug.col(0)  = x_aug;
-  for (int i = 0; i< n_aug_; i++)
-  {
-    Xsig_aug.col(i+1)       = x_aug + sqrt(lambda_+n_aug_) * L.col(i);
-    Xsig_aug.col(i+1+n_aug_) = x_aug - sqrt(lambda_+n_aug_) * L.col(i);
-  }
-  
+ Xsig_aug.col(0)  = x_aug;
+ for (int i = 0; i< n_aug_; i++)
+ {
+  Xsig_aug.col(i+1)       = x_aug + sqrt(lambda_+n_aug_) * L.col(i);
+  Xsig_aug.col(i+1+n_aug_) = x_aug - sqrt(lambda_+n_aug_) * L.col(i);
+}
+
   //write result
-  *Xsig_out = Xsig_aug;
+*Xsig_out = Xsig_aug;
 
 }
 
@@ -423,12 +423,12 @@ void UKF::SigmaPointPrediction(MatrixXd* Xsig_out, double delta_t) {
 
     //avoid division by zero
     if (fabs(yawd) > 0.001) {
-        px_p = p_x + v/yawd * ( sin (yaw + yawd*delta_t) - sin(yaw));
-        py_p = p_y + v/yawd * ( cos(yaw) - cos(yaw+yawd*delta_t) );
+      px_p = p_x + v/yawd * ( sin (yaw + yawd*delta_t) - sin(yaw));
+      py_p = p_y + v/yawd * ( cos(yaw) - cos(yaw+yawd*delta_t) );
     }
     else {
-        px_p = p_x + v*delta_t*cos(yaw);
-        py_p = p_y + v*delta_t*sin(yaw);
+      px_p = p_x + v*delta_t*cos(yaw);
+      py_p = p_y + v*delta_t*sin(yaw);
     }
 
     double v_p = v;
