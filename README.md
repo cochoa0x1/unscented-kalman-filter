@@ -2,7 +2,7 @@
 
 ---
 
-This project implements an unscented kalman filter to track a vehicle using the Constant Turn Rate and Velocity (CTRV) Model. This was done as a project for the udacity self-driving car program.
+This project implements an unscented kalman filter to track a vehicle using the Constant Turn Rate and Velocity (CTRV) Model. This was done as a project for the udacity self-driving car program. Lots of the code was supplied and/or from the instructional material.
 
 #####Result RMSE (/data/obj_pose-laser-radar-synthetic-input.txt):
 * 0.0635457
